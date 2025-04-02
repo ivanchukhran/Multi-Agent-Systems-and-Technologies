@@ -3,6 +3,10 @@ package nure.labs.mast;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.*;
+import jade.domain.DFService;
+import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.ServiceDescription;
+import jade.domain.FIPAException;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 
@@ -10,10 +14,7 @@ public class BookBuyerAgent extends Agent {
 
     private String targetBookTitle;
 
-    private AID[] sellerAgents = {
-        new AID("seller1", AID.ISLOCALNAME),
-        new AID("seller2", AID.ISLOCALNAME),
-    };
+    private AID[] sellerAgents;
 
     protected void setup() {
         System.out.println(
@@ -27,6 +28,22 @@ public class BookBuyerAgent extends Agent {
             addBehaviour(
                 new TickerBehaviour(this, 60000) {
                     protected void onTick() {
+                        DFAgentDescription template = new DFAgentDescription();
+                        ServiceDescription sd = new ServiceDescription();
+                        sd.setType("book-selling");
+                        template.addServices(sd);
+                        try {
+                            DFAgentDescription[] result = DFService.search(
+                                myAgent,
+                                template
+                            );
+                            sellerAgents = new AID[result.length];
+                            for (int i = 0; i < result.length; ++i) {
+                                sellerAgents[i] = result[i].getName();
+                            }
+                        } catch (FIPAException fe) {
+                            fe.printStackTrace();
+                        }
                         myAgent.addBehaviour(new RequestPerformer());
                     }
                 }
