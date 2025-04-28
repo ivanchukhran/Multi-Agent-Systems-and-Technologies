@@ -22,6 +22,7 @@
             <artifactId>jade</artifactId>
             <version>master-SNAPSHOT</version>
         </dependency>
+
     </dependencies>
 
     <build>
