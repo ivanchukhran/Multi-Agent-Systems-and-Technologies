@@ -21,6 +21,7 @@
 
     <modules>
         <module>012</module>
+        <module>034</module>
     </modules>
 
     <repositories>
